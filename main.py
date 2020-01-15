@@ -21,7 +21,7 @@ def main(url):
 		f.extractall()
 		print('Извлечение успешно\n')
 	except:
-		print('Извлечение не выполнено, либо извлечение уже выполнено\n')
+		print('Извлечение не выполнено, либо извлечение уже было произведено\n')
 
 # Распределение файлов по спискам для дальнейшего сравнения.
 	dataSet1 = []
@@ -74,7 +74,7 @@ def main(url):
 	except:
 		print('Ошибка сохранения результата')
 
-	return resultDifferences, resultIntersection
+	return strResultDifferences, strResultIntersection, strMedian, strCorr
 
 
 url = 'https://drive.google.com/uc?authuser=0&id=1MJecQrW-LEnutKl93DxiI-GYmg49MWES&export=download'
