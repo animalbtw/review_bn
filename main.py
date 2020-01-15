@@ -2,16 +2,17 @@ from urllib.request import urlretrieve
 import time
 import zipfile
 import os
+import numpy as np
 
 
 def main(url):
-# Скачиваем zip файл с данными средствами библиотеки urllib, модулем urlretrieve.
+# Скачиваем zip файл с данными.
 	try:
 		zipdata = 'dataset.zip'
 		urlretrieve(url, zipdata)
 		print('\nZip файл успешно загружен\n')
 	except:
-		print('Ошибка загрузки\n')
+		print('Ошибка загрузки, либо файл уже загружен\n')
 
 # Извлечение txt.
 	try:
@@ -20,7 +21,7 @@ def main(url):
 		f.extractall()
 		print('Извлечение успешно\n')
 	except:
-		print('Извлечение не выполнено\n')
+		print('Извлечение не выполнено, либо извлечение уже выполнено\n')
 
 # Распределение файлов по спискам для дальнейшего сравнения.
 	dataSet1 = []
@@ -35,23 +36,48 @@ def main(url):
 		w.close()
 
 # Сравнение списков
-	resultIntersection = [] # Пересечение.
-	resultDifferences = [] # Отличия.
-
+	resultIntersection = []
+	resultDifferences = []
+# Пересечение(1)
 	for x in dataSet1:
 		if x in dataSet2:
 			resultIntersection.append(x)
-	print(str(resultIntersection), '- Пересечение списков\n')
-
+# Отличия(2)
 	for y in dataSet1:
 		if y not in dataSet2:
 			resultDifferences.append(y)
-	print(str(resultDifferences), '- Значения, не пересекающиеся в списках\n')
+# Медиана(3)
+	a = np.array(dataSet1, float)
+	b = np.array(dataSet2, float)
+	aMed = np.median(a)
+	bMed = np.median(b)
+	medians = (aMed,bMed)
+# Корреляция(4)
+	d = np.array(dataSet1).astype(np.float)
+	b = np.array(dataSet2).astype(np.float)
+	corr = np.corrcoef(d,b)
+	
+
+# Создание файла с результатом
+	try:
+		strCorr = ('Значение корреляции\n' + str(corr))
+		strMedian = ('Значения медиан\n' + str(medians))
+		strResultIntersection = ('Пересечение списков\n' + str(resultIntersection) + '\n\n')
+		strResultDifferences = ('\n\nЗначения, не пересекающиеся в списках\n' + str(resultDifferences) + '\n\n')
+		with open('result.txt', 'w') as result:
+			result.write(strResultIntersection)
+			result.write(strResultDifferences)
+			result.write(strCorr)
+			result.write(strMedian)
+			result.close()
+		print('Результат сохранен в файл result.txt')
+	except:
+		print('Ошибка сохранения результата')
+
 	return resultDifferences, resultIntersection
 
 
 url = 'https://drive.google.com/uc?authuser=0&id=1MJecQrW-LEnutKl93DxiI-GYmg49MWES&export=download'
-
 while True:
 	main(url)
 # Пауза 10 минут, после этого цикл повторится.
