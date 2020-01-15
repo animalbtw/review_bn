@@ -5,7 +5,7 @@ import os
 
 
 def main(url):
-# Скачиваем zip файл с данными.
+# Скачиваем zip файл с данными средствами библиотеки urllib, модулем urlretrieve.
 	try:
 		zipdata = 'dataset.zip'
 		urlretrieve(url, zipdata)
